@@ -1,4 +1,14 @@
-# Update Crontab jobs for PHP
+# Crontab PHP
+
+Crontab for PHP provides a clear syntax for writing and deploying cron jobs (inspired by [whenever](https://github.com/javan/whenever)).
+
+### Installation
+
+```sh
+$ composer require pnixx/crontab
+```
+
+### Usage
 
 ```php
 use PNixx\Crontab\Crontab;
@@ -33,7 +43,7 @@ $crontab->update();
 
 ```
 
-Result append block to your crontab:
+Result append or replace block to your crontab:
 
 	#===BEGIN Crontab for project: example.com
 	* * * * * cd /path/to/example.com && bin/console hello
@@ -45,3 +55,55 @@ Result append block to your crontab:
 	*/2 * * * * cd /path/to/example.com && echo "Hello World!"
 	
 	#===END Crontab for project: example.com
+
+### Capistrano\Symfony integration
+
+See on [Capistrano::Symfony documentation](https://github.com/capistrano/symfony) plugin for reference. 
+
+Symfony 3 command class for generation crontab
+
+```php
+use PNixx\Crontab\Crontab;
+use PNixx\Crontab\Job;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class CrontabUpdateCommand extends ContainerAwareCommand
+{
+
+    public function configure()
+    {
+        $this->setName('crontab:update');
+        $this->setDescription('Update all cron tasks for project');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $root_path = realpath($this->getContainer()->get('kernel')->getRootDir() . '/..');
+
+        //Initialize constructor crontab for current environment
+        $crontab = new Crontab($this->getContainer()->get('kernel')->getEnvironment(), $root_path);
+
+        //Add your jobs
+        $crontab->add(new Job('echo "Hello World!"'));
+
+        //Update
+        $crontab->update();
+    }
+}
+```
+
+Add the following to `deploy.rb` for Capistrano '~> 3.5'
+
+```ruby
+namespace :deploy do
+  task :crontab do
+    on roles(:db) do
+      invoke 'symfony:console', 'crontab:update', '--no-interaction'
+    end
+  end
+end
+
+after 'deploy:published', 'deploy:crontab'
+```
