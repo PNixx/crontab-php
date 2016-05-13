@@ -80,13 +80,16 @@ class Crontab {
 			$this->crontab .= fgets($f, 1024);
 			flush();
 		}
-		fclose($f);
+		pclose($f);
 	}
 
+	/**
+	 * Save all changes crontab
+	 */
 	private function save() {
-		$f = popen('crontab -', 'r+');
+		$f = popen('crontab -', 'w');
 		fwrite($f, $this->crontab);
-		fclose($f);
+		pclose($f);
 	}
 
 	/**
