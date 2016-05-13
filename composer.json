@@ -1,0 +1,19 @@
+{
+	"name": "pnixx/crontab",
+	"description": "Provides a clear syntax for writing and deploying cron jobs",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sergey Odintsov",
+			"email": "nixx.dj@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.5.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"PNixx\\Crontab\\": "src/"
+		}
+	}
+}
