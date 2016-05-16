@@ -1,6 +1,10 @@
 <?php
 namespace PNixx\Crontab;
 
+/**
+ * @link https://pnixx.ru
+ * @author Sergey Odintsov <nixx.dj@gmail.com>
+ */
 class Crontab {
 
 	/**
@@ -74,7 +78,7 @@ class Crontab {
 	/**
 	 * Read current crontab file
 	 */
-	private function read() {
+	protected function read() {
 		$f = popen('crontab -l 2> /dev/null', 'r');
 		while(!feof($f)) {
 			$this->crontab .= fgets($f, 1024);
@@ -86,7 +90,7 @@ class Crontab {
 	/**
 	 * Save all changes crontab
 	 */
-	private function save() {
+	protected function save() {
 		$f = popen('crontab -', 'w');
 		fwrite($f, $this->crontab);
 		pclose($f);
@@ -96,15 +100,15 @@ class Crontab {
 	 * Generate new block
 	 * @return string
 	 */
-	private function generate() {
-		return implode(PHP_EOL, [PHP_EOL, $this->block_open, implode(PHP_EOL, $this->jobs), $this->block_close]) . PHP_EOL;
+	protected function generate() {
+		return implode(PHP_EOL, [PHP_EOL, $this->block_open, implode(PHP_EOL, $this->jobs), $this->block_close, '']) . PHP_EOL;
 	}
 
 	/**
 	 * Clear old block
 	 * @throws Exception
 	 */
-	private function clearBlock() {
+	protected function clearBlock() {
 		if( $this->crontab ) {
 			if( stristr($this->crontab, $this->block_open) && !stristr($this->crontab, $this->block_close) ) {
 				throw new Exception('Unclosed indentifier; Your crontab file contains \'' . $this->block_open . '\', but no \'' . $this->block_close . '\'');
@@ -112,7 +116,7 @@ class Crontab {
 			if( !stristr($this->crontab, $this->block_open) && stristr($this->crontab, $this->block_close) ) {
 				throw new Exception('Unopened indentifier; Your crontab file contains \'' . $this->block_close . '\', but no \'' . $this->block_open . '\'');
 			}
-			$this->crontab = preg_replace('/\s*' . preg_quote($this->block_open) . '\s*.+?' . preg_quote($this->block_close) . '\s*/s', PHP_EOL, $this->crontab);
+			$this->crontab = trim(preg_replace('/\s*' . preg_quote($this->block_open) . '\s*.+?' . preg_quote($this->block_close) . '\s*/s', PHP_EOL, $this->crontab));
 		}
 	}
 }

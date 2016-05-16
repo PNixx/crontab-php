@@ -1,6 +1,10 @@
 <?php
 namespace PNixx\Crontab;
 
+/**
+ * @link https://pnixx.ru
+ * @author Sergey Odintsov <nixx.dj@gmail.com>
+ */
 class Job {
 
 	//Time constants
