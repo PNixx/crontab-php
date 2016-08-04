@@ -15,6 +15,7 @@ class Job {
 	const DAY_OF_WEEK = 4;
 
 	//Template constants
+	const REBOOT = '@reboot';
 	const YEARLY = '@yearly';
 	const ANNUALLY = '@annually';
 	const MONTHLY = '@monthly';
@@ -37,6 +38,7 @@ class Job {
 	 * @var array
 	 */
 	protected $templates = [
+		self::REBOOT   => '@reboot',
 		self::YEARLY   => '0 0 1 1 *',
 		self::ANNUALLY => '0 0 1 1 *',
 		self::MONTHLY  => '0 0 1 * *',

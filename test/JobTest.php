@@ -49,4 +49,10 @@ class JobTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals('5 0 11 1 4 cd /path/to/project && test' . PHP_EOL, $job->__toString());
 	}
+
+	public function testRebootTrigger() {
+		$job = new Job('test', Job::REBOOT);
+
+		$this->assertEquals('@reboot test' . PHP_EOL, $job->__toString());
+	}
 }
