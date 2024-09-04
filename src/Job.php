@@ -53,7 +53,12 @@ class Job {
 	protected $command;
 
 	/**
-	 * Working directory will be append command and log file
+	 * @var null|int
+	 */
+	protected $sleep;
+
+	/**
+	 * Working directory will be appended command and log file
 	 * @var string
 	 */
 	protected $path = null;
@@ -65,13 +70,22 @@ class Job {
 
 	/**
 	 * @param string      $command Shell command
-	 * @param string|null $time    Default time: * * * * *
+	 * @param string|null $time    Default time: * * *
+	 * @param null        $sleep
 	 */
-	public function __construct($command, $time = null) {
+	public function __construct($command, $time = null, $sleep = null) {
 		$this->command = $command;
 		if( $time ) {
 			$this->setTime($time);
 		}
+		$this->setSleep($sleep);
+	}
+
+	/**
+	 * @param null|int $sleep
+	 */
+	public function setSleep($sleep) {
+		$this->sleep = $sleep;
 	}
 
 	/**
@@ -182,7 +196,7 @@ class Job {
 	 * @return string
 	 */
 	public function __toString() {
-		return implode(' ', $this->time) . ' ' . $this->getPath($this->command) . $this->getLogPath() . PHP_EOL;
+		return implode(' ', $this->time) . ' ' . ($this->sleep ? 'sleep ' . $this->sleep . ' && ' : '') . $this->getPath($this->command) . $this->getLogPath() . PHP_EOL;
 	}
 
 	/**

@@ -1,6 +1,9 @@
 <?php
 namespace PNixx\Crontab;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+
 function realpath($path) {
 	return $path;
 }
@@ -9,10 +12,10 @@ function realpath($path) {
  * @link https://pnixx.ru
  * @author Sergey Odintsov <nixx.dj@gmail.com>
  */
-class CrontabTest extends \PHPUnit_Framework_TestCase {
+class CrontabTest extends TestCase {
 
 	/**
-	 * @var Crontab|\PHPUnit_Framework_MockObject_MockObject
+	 * @var Crontab|MockObject
 	 */
 	protected $crontab;
 
@@ -22,12 +25,12 @@ class CrontabTest extends \PHPUnit_Framework_TestCase {
 	protected $expected;
 
 	//Setup variables
-	public function setUp() {
+	public function setUp(): void {
 		$job = new Job('test', '*/2 0');
 		$job->setLogFile('test.log');
 
 		$this->crontab = $this->getMockBuilder(Crontab::class)
-			->setMethods(['read', 'save'])
+			->onlyMethods(['read', 'save'])
 			->setConstructorArgs(['phpunit', '/var'])->getMock();
 
 		$this->crontab->add($job);

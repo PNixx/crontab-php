@@ -1,11 +1,13 @@
 <?php
 namespace PNixx\Crontab;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @link https://pnixx.ru
  * @author Sergey Odintsov <nixx.dj@gmail.com>
  */
-class JobTest extends \PHPUnit_Framework_TestCase {
+class JobTest extends TestCase {
 
 	public function testEveryMinutes() {
 		$job = new Job('test');
@@ -54,5 +56,11 @@ class JobTest extends \PHPUnit_Framework_TestCase {
 		$job = new Job('test', Job::REBOOT);
 
 		$this->assertEquals('@reboot test' . PHP_EOL, $job->__toString());
+	}
+
+	public function testRebootTriggerWithSleep() {
+		$job = new Job('test', Job::REBOOT, 5);
+
+		$this->assertEquals('@reboot sleep 5 && test' . PHP_EOL, $job->__toString());
 	}
 }
